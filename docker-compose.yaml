@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  spring-project:
+    build: .
+    container_name: spring-project
+    ports:
+      - "8888:8080"
+    depends_on:
+      - database-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database-service:5432/mediflowdb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_LIQUIBASE_ENABLED=true
+    restart: on-failure
+
+  database-service:
+    image: postgres:15
+    container_name: database-service
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: mediflowdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    restart: always
+
+  database-service-test:
+    image: postgres:15
+    container_name: database-service-test
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: testdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    restart: always
