@@ -1,0 +1,373 @@
+{
+  "info": {
+    "_postman_id": "final-project-fix-v3",
+    "name": "Final Spring Project (Fixed DTO Names)",
+    "description": "Исправленная коллекция под специфичные имена полей в DTO (nameDto, populationDto и т.д.)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "password",
+        "value": "g1234",
+        "type": "string"
+      },
+      {
+        "key": "username",
+        "value": "admin@gmail.com",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Check Login (Test)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"password\": \"g1234\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Register New User",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"newuser@gmail.com\",\n    \"password\": \"password123\",\n    \"roleEntities\": []\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Countries (/api/country)",
+      "item": [
+        {
+          "name": "Create Country (USA)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "// Если сервер возвращает ID в ответе, сохраняем его",
+                  "if(jsonData && jsonData.id) {",
+                  "    pm.collectionVariables.set(\"newCountryId\", jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nameDto\": \"USA\",\n    \"populationDto\": 331000000,\n    \"continent\": \"North America\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/country",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "country"
+              ]
+            },
+            "description": "Внимание на поля: nameDto, populationDto, но continent (без Dto)!"
+          }
+        },
+        {
+          "name": "Get All Countries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/country",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "country"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Presidents (/api/presidents)",
+      "item": [
+        {
+          "name": "Create President (Admin Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nameDto\": \"Joe Biden\",\n    \"politicalPartyDto\": \"Democrat\",\n    \"termStartYearDto\": 2021,\n    \"countryId\": {{newCountryId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/presidents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "presidents"
+              ]
+            },
+            "description": "Поля: nameDto, politicalPartyDto, termStartYearDto. countryId - просто число."
+          }
+        },
+        {
+          "name": "Get All Presidents",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/presidents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "presidents"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cities (/api/city)",
+      "item": [
+        {
+          "name": "Create City (New York)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if(jsonData && jsonData.id) {",
+                  "    pm.collectionVariables.set(\"newCityId\", jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nameDto\": \"New York\",\n    \"populationDto\": 8400000,\n    \"countryId\": {{newCountryId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/city",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "city"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Cities",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/city",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "city"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Nations (/api/nations)",
+      "item": [
+        {
+          "name": "Create Nation (American)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nameDto\": \"American\",\n    \"descriptionDto\": \"Citizens of USA\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/nations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "nations"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Nations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/nations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "nations"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Attractions (/api/attractions)",
+      "item": [
+        {
+          "name": "Create Attraction (Statue of Liberty)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nameDto\": \"Statue of Liberty\",\n    \"typeDto\": \"Monument\",\n    \"ticketPriceDto\": 25.0,\n    \"cityId\": {{newCityId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/attractions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "attractions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Attractions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/attractions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "attractions"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "newCountryId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "newCityId",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}

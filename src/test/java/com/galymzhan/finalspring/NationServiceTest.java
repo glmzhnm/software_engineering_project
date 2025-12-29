@@ -110,17 +110,18 @@ public class NationServiceTest {
 
 
     @Test
-    void deleteTest(){
-        Random random = new Random();
+    void deleteTest() {
+        NationDto nationDto = new NationDto();
+        nationDto.setNameDto("TestNation");
+        nationDto.setDescriptionDto("Description for delete test");
 
-        int randomIndex = random.nextInt(nationService.getAll().size());
+        NationDto createdNation = nationService.createNation(nationDto);
+        Long idToDelete = createdNation.getId();
 
-        Long someIndex = nationService.getAll().get(randomIndex).getId();
-        Assertions.assertTrue(nationService.delete(someIndex));
+        Assertions.assertTrue(nationService.delete(idToDelete));
 
-        NationDto deleted = nationService.getById(someIndex);
-
-        Assertions.assertNull(deleted);
-
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            nationService.getById(idToDelete);
+        });
     }
 }
